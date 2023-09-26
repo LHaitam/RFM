@@ -275,18 +275,29 @@
               currentDate.setDate(currentDate.getDate() + 1);
           }
   
+          // Formatage des dates en "yyyy-MM-dd" et récupération de la première et de la dernière date
+          const premierJour = datesSemaineEnCours[0];
+          const dernierJour = datesSemaineEnCours[datesSemaineEnCours.length - 1];
+          const formatter = new Intl.DateTimeFormat('fr', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          const premierJourFormate = premierJour.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+          const dernierJourFormate = dernierJour.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  
           // Valeur de l'objectif hebdomadaire
           const objectifHebdo = {{ objectif_hebdo.quantite |safe }};
   
+          // Affichez les résultats formattés dans la console
+          console.log('Premier jour de la semaine:', premierJourFormate);
+          console.log('Dernier jour de la semaine:', dernierJourFormate);
+  
           // Ajoutez les données de la courbe d'objectif correctement formatées
           const objectifData = [
-              [datesSemaineEnCours[0], null, null, 0],
-              [datesSemaineEnCours[datesSemaineEnCours.length - 1], null, null, objectifHebdo]
+              [premierJourFormate, null, null, 0],
+              [dernierJourFormate, null, null, objectifHebdo]
           ];
   
           // Ajoutez les données de la courbe d'objectif à votre tableau de données dataDaily
           objectifData.forEach(point => {
-              dataDaily.addRow([point[0], null, null, point[1]]);
+              dataDaily.addRow([new Date(point[0]), null, null, point[3]]);
           });
   
           // Utilisez datesSemaineEnCours comme étiquettes d'axe dans vos optionsDaily
@@ -306,7 +317,7 @@
               tooltip: { isHtml: true },
               pointSize: 5,
               series: {
-                  0: { color: 'red', label: 'Mouvements Quotidiens', pointShape: 'circle' },
+                  0: { type: 'bars', color: '#e61231', label: 'Mouvements Quotidiens', pointShape: 'circle' },
                   1: { color: 'green', label: 'Cumul des Mouvements', pointShape: 'circle' },
                   2: { color: 'blue', label: 'Objectif', pointShape: 'circle' }
               }
@@ -316,6 +327,8 @@
           chartDaily.draw(dataDaily, optionsDaily);
       }
   </script>
+  
+  
   
   
   
