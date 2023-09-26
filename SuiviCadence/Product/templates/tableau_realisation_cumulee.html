@@ -1,0 +1,68 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Réalisation Cumulée</title>
+    <style>
+        .outer-wrapper 
+        {
+            margin: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
+            border: 1px solid black;
+            border-radius: 4px;
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.9);
+            max-width: fit-content;
+            max-height: fit-content;
+        }
+
+        .table-wrapper 
+        {
+
+            overflow-y: scroll;
+            overflow-x: scroll;
+            height: fit-content;
+            max-height: 66.4vh;
+            margin-top: 22px;
+            margin: 15px;
+            padding-bottom: 20px;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Production RFM </div> </br></br>
+        <div class="outer-wrapper">
+            <div class="table-wrapper">
+                <table id="tbl" class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            {% for semaine in weeks %}
+                                <th>S{{ semaine }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for produit, quantites in tableau_data.items %}
+                        <tr>
+                            <td>{{ produit }}</td>
+                            {% for quantite in quantites %}
+                                <td>{{ quantite|default:"None" }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}

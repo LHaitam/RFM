@@ -1,0 +1,45 @@
+{% extends "./base_template.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="title">Liste des Lignes de Production</div> </br></br>
+    <a href="{% url 'ajouter_ligne_production' %}"><button class="ajouter" style="background-color: #4CAF50; height: 40px;" ><i class="fas fa-plus"></i></button></a>
+
+    <table id="tbl" class="content-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Produits</th>
+                <th>Etat</th>
+                <th>Commentaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in lignes_production %}
+            <tr>
+                <td>{{ ligne.nom }}</td>
+                <td>
+                    {% for produit in ligne.produits.all %}
+                        {{ produit.nom }}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="{% if ligne.etat == 'OK' %}green{% else %}red{% endif %}">
+                    {{ ligne.etat }}
+                </td>
+                <td>
+                    {{ ligne.commentaire }}
+                </td>
+                <td>
+                    <a href="{% url 'details_ligne_production' ligne.pk %}"><button class="voir">Voir Détails</button></a>
+                    <a href="{% url 'modifier_ligne_production' ligne.pk %}"><button class="modifier">Modifier</button></a>
+                    <a href="{% url 'supprimer_ligne_production' ligne.pk %}"><button class="supprimer">Supprimer</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

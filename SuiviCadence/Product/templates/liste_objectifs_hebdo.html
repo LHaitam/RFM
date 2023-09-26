@@ -1,0 +1,36 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="title">Liste des Objectifs</div> </br></br>
+    <a href="{% url 'ajouter_objectif_hebdo' %}"><button class="ajouter" style="background-color: #4CAF50; height: 40px;" ><i class="fas fa-plus"></i></button></a>
+    <table id="tbl" class="content-table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Quantité hebdomadaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for objectif in objectifs %}
+            <tr>
+                <td>{{ objectif.produit }}</td>
+                <td>{{ objectif.date_debut }}</td>
+                <td>{{ objectif.date_fin }}</td>
+                <td>{{ objectif.quantite }}</td>
+                <td>
+                    <a href="{% url 'modifier_objectif_hebdo' pk=objectif.pk %}"><button class="modifier">Modifier</button></a>
+                    <a href="{% url 'supprimer_objectif_hebdo' objectif_hebdo_id=objectif.pk %}"><button class="supprimer" >Supprimer</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

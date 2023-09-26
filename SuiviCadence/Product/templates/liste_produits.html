@@ -1,0 +1,39 @@
+{% extends "./base_template.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="title">Liste des Produits</div> </br></br>
+    <a href="{% url 'ajouter_produit' %}"><button class="ajouter" style="background-color: #4CAF50; height: 40px;" ><i class="fas fa-plus"></i></button></a>
+
+    <table id="tbl" class="content-table">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Nom</th>
+                <th>Ligne Production</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+            <tr>
+                <td>{{ produit.reference }}</td>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.ligne_production.nom }}</td>
+                <td>
+                    <a href="{% url 'produit' produit.pk %}"><button class="voir">Voir Détails</button></a>
+                    <a href="{% url 'modifier_produit' produit.pk %}"><button class="modifier">Modifier</button></a>
+                    <a href="{% url 'supprimer_produit' produit.pk %}"><button class="supprimer" >Supprimer</button>
+                        
+                    </a>
+
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

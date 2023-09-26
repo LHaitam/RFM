@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop-up</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}"> <!-- Assurez-vous de lier le bon fichier CSS ici -->
+    <style>
+        
+    </style>
+</head>
+
+<body>
+
+    <!-- Bouton pour ouvrir la fenêtre modale -->
+    <button class="open-modal-btn" onclick="openModal()">Ouvrir la fenêtre modale</button>
+
+    <!-- Fenêtre modale -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span> <!-- Bouton pour fermer la fenêtre modale -->
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour ouvrir la fenêtre modale
+        function openModal() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // Fonction pour fermer la fenêtre modale
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+    </script>
+
+</body>
+
+</html>

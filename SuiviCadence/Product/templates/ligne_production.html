@@ -1,0 +1,361 @@
+
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclure la bibliothèque Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Inclure la bibliothèque Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <style>
+        /* Styles pour les conteneurs */
+
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 80px;
+            padding: 10px;
+            align-items: center;
+        }
+
+        .conteneur-interieur {
+            display: flex;
+            flex-direction: column;
+            flex: 0.8; /* Hauteur réduite à 80% de la hauteur du conteneur extérieur */
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            
+        }
+
+        .partie1 {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            margin: 5px;
+            align-items: center;
+        }
+
+        .sous-partie1 {
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+        }
+
+        .sous-partie2 {
+            flex: 2;
+            margin: 5px;
+            text-align: center;
+        }
+
+        .partie2 {
+            display: flex;
+            flex-direction: row;
+            flex: 2;
+            margin: 5px;
+            align-items: center;
+        }
+
+        .sous-partie3 {
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+        }
+
+        .sous-partie4 {
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+        }
+
+        .s-container, .lp-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            padding: 10px;
+            width: 500px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Conteneur extérieur -->
+    <div class="container">
+<!--         <div class="title">Détails de la ligne de production </div> </br></br> -->
+        <div class="s-container">
+            <h2>Production RFM Semaine {{ numero_semaine }}</h2>
+        </div>
+        <div class="lp-container">
+            <h2>Ligne de production : {{ ligne_production.nom }}</h2>
+        </div>
+
+        <!-- Conteneur intérieur -->
+        {% for produit_data in produits %}
+        <div class="conteneur-interieur">
+            <!-- Partie 1 (1/3 de la hauteur) -->
+            <div class="partie1">
+                <!-- Sous-partie 1 (1/3 de la largeur) -->
+                <div class="sous-partie1">
+                    {% if produit_data.produit.photo %}
+                        <img src="{% static 'images/' %}{{ produit_data.produit.photo }}" alt="{{ produit_data.produit.nom }}" height="300">
+                    {% else %}
+                        <p>Aucune image disponible pour ce produit.</p>
+                    {% endif %}
+                    <h4>{{ produit_data.produit.reference }}</h4>
+                    <h4>{{ produit_data.produit.nom }}</h4>
+                </div>
+                <!-- Sous-partie 2 (2/3 de la largeur) -->
+                <div class="sous-partie2">
+                    <table id="tbl" class="content-table">
+                        <thead>
+                            <tr>
+                                <th>Takt théorique (h)</th>
+                                <th>Takt Réel</th>
+                                <th>Objectif Semaine</th>
+                                <th>Progression théorique</th>
+                                <th>Réalisé</th>
+                                <th>Reste à faire</th>
+                                <th>Retard</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ produit_data.takt_theorique }}</td>
+                                <td>{{ produit_data.takt_reel }}</td>
+                                <td>{{ produit_data.objectif_hebdo.quantite }}</td>
+                                <td>{{ produit_data.progression_theorique }}</td>
+                                <td>{{ produit_data.total_realise }}</td>
+                                <td>{{ produit_data.reste_a_faire }}</td>
+                                <td>{{ produit_data.retard }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Partie 2 (2/3 de la hauteur) -->
+            <div class="partie2">
+                <!-- Sous-partie 3 (1/2 de la largeur) -->
+                <div class="sous-partie3">
+                    <canvas id="graphique1-{{ forloop.counter }}"></canvas>
+                </div>
+                <!-- Sous-partie 4 (1/2 de la largeur) -->
+                <div class="sous-partie4">
+                    <canvas id="graphique2-{{ forloop.counter }}"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            // Coordonnées de l'origine
+            var x1 = 8;
+            var y1 = 0;
+
+            // Coordonnées de la destination (objectif_hebdo/10, 18h) si objectif_hebdo est défini, sinon (0, 18h)
+            var objectif_hebdo = {{ produit_data.objectif_hebdo.quantite }};
+            var x2 = 18;
+            var y2 = objectif_hebdo ? objectif_hebdo / 10 : 0;
+
+            // Récupérer les mouvements du produit par heure et les formater en tant que nombres
+            var mouvements = [
+                {% for mouvement in produit_data.mouvements_par_heure %}
+                    { x: {{ mouvement.0 }}, y: {{ mouvement.1 }} },
+                {% endfor %}
+            ];
+
+            console.log(mouvements);
+
+            // Récupérer les cumuls des mouvements par heure et les calculer
+            // Récupérer les cumuls des mouvements par heure et les calculer
+            var cumulsMouvementsParHeure = [];
+            var cumul = 0;
+            for (var i = 0; i < mouvements.length; i++) {
+                cumul += mouvements[i].y; // Utiliser les coordonnées y des mouvements pour le cumul
+                cumulsMouvementsParHeure.push({ x: mouvements[i].x, y: cumul }); // Ajouter le cumul dans le tableau
+            }
+
+
+            console.log("Coordonnées des mouvements :", mouvements);
+            // Dessiner la courbe linéaire
+            var ctx1 = document.getElementById('graphique1-{{ forloop.counter }}').getContext('2d');
+            var chart1 = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['8h', '18h'],
+                    datasets: [
+                        {
+                            label: 'Courbe linéaire',
+                            data: [
+                                { x: x1, y: y1 },
+                                { x: x2, y: y2 }
+                            ],
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {
+                            label: 'Mouvements du produit',
+                            data: mouvements,
+                            borderColor: 'green',
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {
+                        label: 'Cumul des mouvements',
+                        data: cumulsMouvementsParHeure, // Utiliser les cumuls des mouvements par jour
+                        borderColor: 'red',
+                        borderWidth: 2,
+                        fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: 8,
+                            max: 18, // Changer la valeur max en fonction de la plage x que vous souhaitez afficher
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return value + 'h';
+                                }
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 0,
+
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                // Récupérer la liste des dates des jours de la semaine en cours, en commençant par le lundi
+                var datesSemaineEnCours = [];
+                var dateCourante = moment().startOf('isoWeek');
+                for (var i = 0; i < 5; i++) { // Nous supposons ici que la semaine de travail comprend 5 jours (du lundi au vendredi)
+                    datesSemaineEnCours.push(dateCourante.format('DD MMMM YYYY'));
+                    dateCourante.add(1, 'days');
+                }
+
+                var premierJourSemaine = datesSemaineEnCours[0]; // Première date de la semaine en cours (lundi)
+                var dernierJourSemaine = datesSemaineEnCours[datesSemaineEnCours.length - 1]; // Dernière date de la semaine en cours (vendredi)
+
+                // Coordonnées de l'origine
+                var x1 = premierJourSemaine;
+                var y1 = 0;
+
+                // Coordonnées de la destination (objectif_hebdo/10, 18h) si objectif_hebdo est défini, sinon (0, 18h)
+                var objectif_hebdo = {{ produit_data.objectif_hebdo.quantite }};
+                var x2 = dernierJourSemaine;
+                var y2 = objectif_hebdo ? objectif_hebdo : 0;
+
+                // Récupérer les totaux des mouvements par jour et les formater en tant que nombres
+                var totauxMouvementsParJour = [
+                    {% for mouvement_par_jour in produit_data.mouvements_par_jour %}
+                        {{ mouvement_par_jour.total_ach }},
+                    {% endfor %}
+                ];
+
+                // Récupérer les cumuls des mouvements par jour et les calculer
+                var cumulsMouvementsParJour = [];
+                var cumul = 0;
+                for (var i = 0; i < totauxMouvementsParJour.length; i++) {
+                    cumul += totauxMouvementsParJour[i];
+                    cumulsMouvementsParJour.push(cumul);
+                }
+
+                // Dessiner la courbe linéaire
+                var ctx = document.getElementById('graphique2-{{ forloop.counter }}').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: datesSemaineEnCours, // Utiliser les dates des jours de la semaine comme labels
+                        datasets: [
+                            {
+                                label: 'Mouvement hebdomadaire',
+                                data: totauxMouvementsParJour, // Utiliser les totaux des mouvements par jour
+                                borderColor: 'green',
+                                borderWidth: 2,
+                                fill: false
+                            },
+                            {
+                                label: 'Objectif',
+                                data: [
+                                    { x: x1, y: y1 },
+                                    { x: x2, y: y2 }
+                                ],
+                                borderColor: 'blue',
+                                borderWidth: 2,
+                                fill: false
+                            },
+                            {
+                                label: 'Cumul des mouvements',
+                                data: cumulsMouvementsParJour, // Utiliser les cumuls des mouvements par jour
+                                borderColor: 'red',
+                                borderWidth: 2,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                type: 'category', // Utiliser une échelle de catégorie pour les dates
+                                position: 'bottom',
+                                ticks: {
+                                    autoSkip: false // Pour afficher toutes les dates des jours de la semaine
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                min: 0,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+        
+        <br><br>
+    {% endfor %}
+    </div>
+
+    
+    
+</body>
+</html>
+
+
+{% endblock %}

@@ -1,0 +1,83 @@
+
+<style>
+    /* CSS pour centrer le contenu au milieu de l'écran */
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        text-align: center;
+    }
+    /* Style général */
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+    }
+
+    /* Conteneur de la vue */
+    .container {
+        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+    }
+
+    /* Titre de la vue */
+    .title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Message de confirmation */
+    .message {
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    /* Bouton de confirmation */
+    button.supprimer {
+        background-color: #ff5555;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    /* Bouton d'annulation */
+    button.annuler {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+</style>
+<div class="container">
+    <div class="title">Supprimer le produit</div> </br></br>
+    <p>Voulez-vous vraiment supprimer la ligne "{{ ligne_production.nom }}" ?</p>
+    <p>PS: En cas de confirmation ça supprimera tout les produits qui appartiennent a cette ligne</p>
+    <form method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="supprimer">Confirmer</button>
+    </form>
+    <a href="{% url 'liste_lignes_production' %}">
+        <button class="annuler">Annuler</button>
+    </a>
+</div>
+
+

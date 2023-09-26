@@ -1,0 +1,108 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"],
+    input[type="submit"] {
+        height: 40px;
+        width: 20%;
+        border-radius: 10px;
+        border-radius: 5px;
+        border: none;
+        color: #fff;
+        font-size: 18px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f58490, #CE1126);
+        outline: none;
+        display: flex;
+        justify-content: center;
+        /* Pour centrer horizontalement */
+        align-items: center;
+        /* Pour centrer verticalement */
+        margin: 35px 0;
+    }
+
+    input[type="submit"]:hover {
+        background-color: linear-gradient(-135deg, #f58490, #CE1126);
+    }
+
+    form .button {
+        height: 40px;
+        margin: 35px 0;
+        margin-left: 60px;
+    }
+
+
+    form {
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    form input[type="text"],
+    form input[type="date"],
+    form input[type="number"],
+    form select,
+    form textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+
+
+    a {
+        color: #007bff;
+        /* Couleur du texte du lien */
+        text-decoration: none;
+        /* Pas de soulignement */
+        transition: color 0.3s ease;
+        /* Transition fluide de la couleur lors du survol */
+    }
+</style>
+<div class="container">
+    <div class="title">Ajouter un nouvel objectif hebdomadaire</div> </br></br>
+    <form method="post">
+        <div class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </div>
+        <input type="submit" value="Ajouter">
+    </form>
+
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+    <div class="title">Liste des Mouvements</div> </br></br>
+    <a href="{% url 'ajouter_mouvement' %}"><button class="ajouter" style="background-color: #4CAF50; height: 40px;" ><i class="fas fa-plus"></i></button></a>
+    <table id="tbl" class="content-table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Date et heure</th>
+                <th>Quantité</th>
+                <th>Utilisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mouvement in mouvements %}
+            <tr>
+                <td>{{ mouvement.produit }}</td>
+                <td>{{ mouvement.date_heure }}</td>
+                <td>{{ mouvement.quantite }}</td>
+                <td>{{ mouvement.utilisateur.username }}</td>
+                <td>
+                    <a href="{% url 'modifier_mouvement' mouvement_id=mouvement.pk %}"><button class="modifier">Modifier</button></a>
+                    <a href="{% url 'supprimer_mouvement' mouvement_id=mouvement.pk %}"><button class="supprimer" >Supprimer</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

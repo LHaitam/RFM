@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Boxiocns CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/produits/rfm.png' %}">
+<!--     <script type="text/javascript"
+        src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=xSsau0J7CTMmKxmxEnkwciiwKLqmuIOmmRBd5QeLhyCVdJxc5oZWkoMx4jO3otF04BdEeyFo6_nCC5YupgDbCQ"
+        charset="UTF-8"></script> -->
+    <!-- <link rel="stylesheet" crossorigin="anonymous"
+        href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jZHBuLmlvL3BpeXVzaHBkL2Z1bGxwYWdlL3JOQkpaV0I" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .green {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+
+        /* Styles pour la case "KO" */
+        .red {
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+        }
+
+        button#bouton-plein-ecran{
+            color:black;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar close">
+        <div class="logo-details">
+            <img src="{% static 'images/produits/rfm.png' %}" alt="Logo Collins Aerospace" class="logo_img"
+                style="width: 50px; height: auto; margin: 15px;">
+            <!--             <img src="../../static/images/produits/rfm.png" alt="Logo Collins Aerospace" class="logo_img" style="width: 50px; height: auto; margin: 15px;">
+ --> <span class="logo_name">Collins Aerospace</span>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="{% url 'tableau_realisation_cumulee' %}">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="link_name">Dashboard</span>
+                </a>
+                <ul class="sub-menu blank">
+                    <li><a class="link_name" href="{% url 'tableau_realisation_cumulee' %}">Dashboard</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <div class="iocn-link">
+                    <a href="#">
+                        <i class='bx bxl-product-hunt'></i>
+                        <span class="link_name">Production</span>
+                    </a>
+                    <i class='bx bxs-chevron-down arrow'></i>
+                </div>
+                <ul class="sub-menu">
+                    <li><a class="link_name " href="#">Production</a></li>
+                    <li><a href="{% url 'liste_lignes_production' %}">Lignes de production</a></li>
+                    <li><a href="{% url 'liste_produits' %}">Produits</a></li>
+                    <li><a href="{% url 'liste_objectifs_hebdo' %}">Objecifs</a></li>
+                    <li><a href="{% url 'liste_mouvements' %}">Mouvements</a></li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+
+    <section class="home-section">
+        <div class="home-content">
+            <i class='bx bx-menu'></i>
+            <!-- Modifier le bouton pour inclure l'icône -->
+            <button id="bouton-plein-ecran"><i class="fas fa-expand"></i> Plein écran</button>
+
+        </div>
+
+        <!-- Contenu spécifique à chaque page sera inséré ici -->
+        {% block content %}{% endblock %}
+
+    </section>
+
+    <script>
+        // JavaScript pour la barre latérale
+        let arrow = document.querySelectorAll(".arrow");
+        for (var i = 0; i < arrow.length; i++) {
+            arrow[i].addEventListener("click", (e) => {
+                let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+                arrowParent.classList.toggle("showMenu");
+            });
+        }
+
+        let link_name = document.querySelectorAll(".link_name");
+        for (var i = 0; i < link_name.length; i++) {
+            link_name[i].addEventListener("click", (e) => {
+                let arrowParent = e.target.parentElement.parentElement;//selecting main parent of arrow
+                arrowParent.classList.toggle("showMenu");
+            });
+        }
+
+        let sidebar = document.querySelector(".sidebar");
+        let sidebarBtn = document.querySelector(".bx-menu");
+        console.log(sidebarBtn);
+        sidebarBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+        });
+    </script>
+    <!-- Ajoutez ce script JavaScript à la fin de votre template -->
+    <script>
+        // Fonction pour activer ou désactiver le mode plein écran
+        function togglePleinEcran() {
+            var element = document.documentElement; // Pour afficher en plein écran tout le contenu de la page
+
+            // Vérifier si le mode plein écran est déjà activé
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                // Si le mode plein écran est activé, désactiver
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                localStorage.setItem('pleinEcran', 'false');
+            } else {
+                // Sinon, activer le mode plein écran
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                localStorage.setItem('pleinEcran', 'true');
+            }
+        }
+
+        // Vérifier si le mode plein écran est déjà activé lors du chargement de la page
+        document.addEventListener('DOMContentLoaded', function () {
+            var estEnPleinEcran = localStorage.getItem('pleinEcran');
+            if (estEnPleinEcran === 'true') {
+                togglePleinEcran();
+            }
+        });
+
+        // Gérer le clic sur le bouton "Plein écran"
+        document.getElementById("bouton-plein-ecran").addEventListener("click", function () {
+            togglePleinEcran();
+        });
+    </script>
+    
+
+
+</body>
+
+</html>

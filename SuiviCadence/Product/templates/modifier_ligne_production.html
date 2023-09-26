@@ -1,0 +1,109 @@
+{% extends "./base_template.html" %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
+{% block content %}
+    <style>
+        
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        input[type="submit"] {
+            height: 40px;
+            width: 20%;
+            border-radius: 10px;
+            border-radius: 5px;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f58490, #CE1126);
+            outline: none;
+            display: flex;
+            justify-content: center; /* Pour centrer horizontalement */
+            align-items: center; /* Pour centrer verticalement */
+            margin: 35px 0;
+        }
+
+        input[type="submit"]:hover {
+            background-color: linear-gradient(-135deg, #f58490, #CE1126);
+        }
+
+        form .button
+        {
+            height: 40px;
+            margin: 35px 0;
+            margin-left: 60px;
+        }
+
+        img.logo_img {
+            width: 50px;
+            height: auto;
+            margin: 15px;
+        }
+
+    </style> 
+    <div class="container">
+    <div class="title">Modifier la ligne de production</div> </br></br>
+    <!-- Formulaire de modification de la ligne de production -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" value="{{ ligne_production.nom }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="etat">État :</label>
+            <select id="etat" name="etat" required>
+                <option value="OK" {% if ligne_production.etat == 'OK' %}selected{% endif %}>OK</option>
+                <option value="KO" {% if ligne_production.etat == 'KO' %}selected{% endif %}>KO</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="commentaire">Commentaire :</label>
+            <textarea id="commentaire" name="commentaire" rows="4">{{ ligne_production.commentaire }}</textarea>
+        </div>
+
+        <input type="submit" value="Enregistrer">
+    </form>
+</div>
+
+{% endblock %}
+
+
