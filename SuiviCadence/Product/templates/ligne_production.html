@@ -15,6 +15,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Inclure la bibliothèque Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- JavaScript pour l'autorefresh -->
+    <script type="text/javascript">
+        // Fonction pour actualiser la page
+        function autoRefreshPage() {
+            // Actualise la page actuelle
+            location.reload();
+        }
+
+        // Appel de la fonction d'autorefresh toutes les 5 minutes (300 000 millisecondes)
+        setInterval(autoRefreshPage, 300000);
+    </script>
     <style>
         /* Styles pour les conteneurs */
 

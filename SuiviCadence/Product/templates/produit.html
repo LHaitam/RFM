@@ -14,6 +14,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- JavaScript pour l'autorefresh -->
+    <script type="text/javascript">
+      // Fonction pour actualiser la page
+      function autoRefreshPage() {
+          // Actualise la page actuelle
+          location.reload();
+      }
+
+      // Appel de la fonction d'autorefresh toutes les 5 minutes (300 000 millisecondes)
+      setInterval(autoRefreshPage, 300000);
+    </script>
     <style>
         /* Style pour le conteneur principal */
         .container {
@@ -96,6 +107,11 @@
         h3{
           font-size: 1.5em;
         }
+
+        .dark-mode {
+            background-color: #121212; /* Couleur de fond sombre */
+            color: #ffffff; /* Couleur du texte en mode sombre */
+        }
     </style>
 </head>
 <body>
@@ -174,7 +190,7 @@
               <div id="hourlyChart"></div>
             </div>
             <div class="part2-right">
-              <div id="dailyChart"></div>
+              <div id="dailyChart" > </div>
             </div>
         </div>
     </div>
