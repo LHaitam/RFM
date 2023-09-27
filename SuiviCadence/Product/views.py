@@ -24,17 +24,23 @@ def produit(request, produit_id):
         date = datetime.now()
         now = timezone.localtime()
 
-        # Récupérer l'objectif hebdomadaire courant du produit
-        dernier_objectif_hebdo = ObjectifHebdo.objects.filter(produit=produit).first()
+        # Obtenez la date actuelle
+        date_actuelle = datetime.now()
 
-        # Si aucun objectif hebdomadaire n'existe pour le produit cette semaine, créer un nouvel objectif
+        # Récupérez le numéro de semaine actuel
+        numero_semaine_actuel = date_actuelle.isocalendar()[1]
+
+        # Récupérez le dernier objectif hebdomadaire du produit pour la semaine actuelle
+        dernier_objectif_hebdo = ObjectifHebdo.objects.filter(produit=produit, numero_semaine=numero_semaine_actuel).order_by('-date_fin').first()
+
         if not dernier_objectif_hebdo:
-            debut_semaine = date - timedelta(days=date.weekday())
+            # Si aucun objectif hebdomadaire n'existe pour le produit cette semaine, vous pouvez en créer un
+            debut_semaine = date_actuelle - timedelta(days=date_actuelle.weekday())
             fin_semaine = debut_semaine + timedelta(days=4)
 
             dernier_objectif_hebdo = ObjectifHebdo.objects.create(
                 produit=produit,
-                numero_semaine=date.isocalendar()[1],
+                numero_semaine=numero_semaine_actuel,
                 date_debut=debut_semaine,
                 date_fin=fin_semaine,
                 quantite=0
@@ -161,7 +167,7 @@ def produit(request, produit_id):
             'numero_semaine': numero_semaine_en_cours,
             'debut_semaine': dernier_objectif_hebdo.date_debut,
             'fin_semaine': dernier_objectif_hebdo.date_fin,
-            'objectif_hebdo': dernier_objectif_hebdo,
+            'objectif_hebdo': objectif_semaine_courante,
             'objectif_semaine_courante':objectif_semaine_courante,
             'takt_theorique': takt_theorique,
             'takt_reel': takt_reel,
@@ -319,15 +325,12 @@ def details_ligne_production(request, ligne_production_id):
     fin_semaine = debut_semaine + timedelta(days=4)
 
     for produit in produits:
-        dernier_objectif_hebdo, created = ObjectifHebdo.objects.get_or_create(
+        dernier_objectif_hebdo = ObjectifHebdo.objects.filter(
             produit=produit,
             numero_semaine=numero_semaine,
-            defaults={
-                'date_debut': debut_semaine,
-                'date_fin': fin_semaine,
-                'quantite': 0,
-            }
-        )
+            date_debut__lte=timezone.now(),  # Filtre pour obtenir l'objectif actuel ou précédent
+        ).order_by('-date_debut').first()  # Triez par date de début décroissante et obtenez le premier
+
 
         jours_travailles = 5
         heures_travailles = 8
@@ -676,14 +679,21 @@ def liste_objectifs_hebdo(request):
 #Vue pour ajouter Objectif Hebdo
 
 
+from django.utils import timezone
+
 def ajouter_objectif_hebdo(request):
     try:
+        # Obtenez la semaine actuelle
+        numero_semaine_actuelle = timezone.now().isocalendar()[1]
+
         # Vérifier si la requête est de type POST, c'est-à-dire si le formulaire a été soumis
         if request.method == 'POST':
             # Créer une instance du formulaire avec les données POST soumises par l'utilisateur
             form = ObjectifHebdoForm(request.POST)
             # Vérifier si le formulaire est valide
             if form.is_valid():
+                # Affecter le numéro de semaine actuelle au champ 'numero_semaine' du formulaire
+                form.instance.numero_semaine = numero_semaine_actuelle
                 # Sauvegarder le nouvel objectif hebdomadaire dans la base de données
                 objectif_hebdo = form.save()
                 # Rediriger l'utilisateur vers la page de détails du nouvel objectif hebdomadaire
@@ -691,7 +701,7 @@ def ajouter_objectif_hebdo(request):
 
         else:
             # Si la requête n'est pas de type POST, créer une instance vide du formulaire
-            form = ObjectifHebdoForm()
+            form = ObjectifHebdoForm(initial={'numero_semaine': numero_semaine_actuelle})
 
         # Préparer le contexte pour le rendu du template avec le formulaire
         context = {
@@ -707,6 +717,7 @@ def ajouter_objectif_hebdo(request):
         # Par exemple, si une erreur de base de données se produit, une erreur 500 sera renvoyée
         # Vous pouvez personnaliser la gestion des exceptions ici en fonction de vos besoins
         raise Http404("Une erreur s'est produite lors de l'ajout de l'objectif hebdomadaire.")
+
 
 
 ####################################################################################################################
