@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Page Divisée Horizontalement et Verticalement</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Inclure la bibliothèque Chart.js -->
@@ -13,60 +14,69 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-
     <style>
-        body,
-        html {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-        }
-    
+        /* Style pour le conteneur principal */
         .container {
-          display: flex;
-          flex-direction: column;
-          height: 93%;
+            width: 100%;
+            height: 98%; /* 100% de la hauteur de la fenêtre visible */
+            display: flex;
+            flex-direction: column; /* Disposition en colonne pour diviser verticalement */
         }
-    
-        .partie1 {
-          display: flex;
-          flex-direction: column;
-          justify-content: center; /* Centre verticalement */
-          align-items: center; /* Centre horizontalement */
-          text-align: center; /* Centre le texte horizontalement (si nécessaire) */
+
+        /* Style pour la première partie (2/5 de la hauteur) */
+        .part1 {
+            flex: 2; /* Occupe 2/5 de la hauteur totale */
+            display: flex;
+            flex-direction: row; /* Disposition en ligne pour diviser horizontalement */
         }
-    
-        .partie2 {
-          flex: 1;
-          display: flex;
-    
+
+        /* Style pour la partie de gauche (1/4 de la largeur de part1) */
+        .left {
+            flex: 1; /* Occupe 1/4 de la largeur de part1 */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centre horizontalement */
+            justify-content: center; /* Centre verticalement */
+            text-align: center; /* Centre le texte horizontalement */
         }
-    
-        .partie2-gauche {
-          flex: 1;
-          padding: 5px;
+
+        /* Style pour la partie de droite (3/4 de la largeur de part1) */
+        .right {
+            flex: 3; /* Occupe 3/4 de la largeur de part1 */
+            display: flex;
+            flex-direction: column; /* Disposition en colonne pour diviser verticalement */
         }
-    
-        .partie2-droite {
-          flex: 2;
-          padding: 5px;
+
+        /* Style pour la première partie de droite (1/2 de la hauteur de right) */
+        .right-top {
+            flex: 1; /* Occupe 1/2 de la hauteur de right */
+            padding: 20px;
         }
-    
-        .partie3 {
-          flex: 3;
-          display: flex;
-    
+
+        /* Style pour la deuxième partie de droite (1/2 de la hauteur de right) */
+        .right-bottom {
+            flex: 1; /* Occupe 1/2 de la hauteur de right */
+            padding: 20px;
         }
-    
-        .partie3-gauche {
-          flex: 1;
-    
+
+        /* Style pour la deuxième partie (3/5 de la hauteur) */
+        .part2 {
+            flex: 3; /* Occupe 3/5 de la hauteur totale */
+            display: flex;
+            flex-direction: row; /* Disposition en ligne pour diviser horizontalement */
         }
-    
-        .partie3-droite {
-          flex: 1;
-    
+
+        /* Style pour la partie de gauche de la partie 2 (1/2 de la largeur de part2) */
+        .part2-left {
+            flex: 1; /* Occupe 1/2 de la largeur de part2 */
+            padding: 20px;
+        }
+
+        /* Style pour la partie de droite de la partie 2 (1/2 de la largeur de part2) */
+        .part2-right {
+            flex: 1; /* Occupe 1/2 de la largeur de part2 */
+            padding: 20px;
         }
 
         #hourlyChart, #dailyChart {
@@ -79,87 +89,95 @@
             font-weight: bold;
         }
 
-      </style>
+        h2{
+          font-size: 2em;
+        }
+
+        h3{
+          font-size: 1.5em;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="partie1">
-          <h2>Production RFM Semaine {{ numero_semaine }}</h2>
-          {% if produit.photo %}
-          <img src="{% static 'images/'%}{{ produit.photo }}" alt="{{ produit.nom }}" height="150">
-          {% else %}
-          <p>Aucune image disponible pour ce produit.</p>
-          {% endif %}
-    
-          <h3>{{ produit.nom }}</h3>
+        <div class="part1">
+            <div class="left">
+              <h2>Production RFM Semaine {{ numero_semaine }}</h2>
+              {% if produit.photo %}
+              <img src="{% static 'images/'%}{{ produit.photo }}" alt="{{ produit.nom }}" height="200">
+              {% else %}
+              <p>Aucune image disponible pour ce produit.</p>
+              {% endif %}
+              <h3>{{ produit.nom }}</h3>
+            </div>
+            <div class="right">
+                <div class="right-top">
+                  <table id="tbl" class="content-table">
+                    <thead>
+                      <tr>
+                        <th>Client</th>
+                        <th>Date début</th>
+                        <th>Date  fin</th>
+                        <th>Quantité</th>
+                        <th>Modifier</th>
+                        <th>Supprimer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if objectif_semaine_courante %}
+                      <tr>
+                        <td>{{ objectif_semaine_courante.client }}</td>
+                        <td>{{ objectif_semaine_courante.date_debut|date:"d/m/Y" }}</td>
+                        <td>{{ objectif_semaine_courante.date_fin |date:"d/m/Y"}}</td>
+                        <td>{{ objectif_semaine_courante.quantite }}</td>
+                        <td><a href="{% url 'modifier_objectif_hebdo' objectif_semaine_courante.id %}">Modifier</a></td>
+                        <td><a href="{% url 'supprimer_objectif_hebdo' objectif_semaine_courante.id %}">Supprimer</a></td>
+                      </tr>
+                      {% else %}
+                      <tr>
+                        <td colspan="6">Aucun objectif hebdomadaire défini pour cette semaine.</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="right-bottom">
+                  <table id="tbl" class="content-table">
+                    <thead>
+                      <tr>
+                        <th>Takt théorique (h)</th>
+                        <th>Takt Réel</th>
+                        <th>Objectif Semaine</th>
+                        <th>Progression théorique</th>
+                        <th>Réalisé</th>
+                        <th>Reste à faire</th>
+                        <th>Retard</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ takt_theorique }}</td>
+                        <td>{{ takt_reel }}</td>
+                        <td>{{ objectif_hebdo.quantite }}</td>
+                        <td>{{ progression_theorique }}</td>
+                        <td>{{ total_realise }}</td>
+                        <td>{{ reste_a_faire }}</td>
+                        <td>{{ retard }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
         </div>
-        <div class="partie2">
-          <div class="partie2-gauche">
-            <table id="tbl" class="content-table">
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Date début</th>
-                  <th>Date  fin</th>
-                  <th>Quantité</th>
-                  <th>Modifier</th>
-                  <th>Supprimer</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% if objectif_semaine_courante %}
-                <tr>
-                  <td>{{ objectif_semaine_courante.client }}</td>
-                  <td>{{ objectif_semaine_courante.date_debut|date:"d/m/Y" }}</td>
-                  <td>{{ objectif_semaine_courante.date_fin |date:"d/m/Y"}}</td>
-                  <td>{{ objectif_semaine_courante.quantite }}</td>
-                  <td><a href="{% url 'modifier_objectif_hebdo' objectif_semaine_courante.id %}">Modifier</a></td>
-                  <td><a href="{% url 'supprimer_objectif_hebdo' objectif_semaine_courante.id %}">Supprimer</a></td>
-                </tr>
-                {% else %}
-                <tr>
-                  <td colspan="6">Aucun objectif hebdomadaire défini pour cette semaine.</td>
-                </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          </div>
-          <div class="partie2-droite">
-            <table id="tbl" class="content-table">
-              <thead>
-                <tr>
-                  <th>Takt théorique (h)</th>
-                  <th>Takt Réel</th>
-                  <th>Objectif Semaine</th>
-                  <th>Progression théorique</th>
-                  <th>Réalisé</th>
-                  <th>Reste à faire</th>
-                  <th>Retard</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ takt_theorique }}</td>
-                  <td>{{ takt_reel }}</td>
-                  <td>{{ objectif_hebdo.quantite }}</td>
-                  <td>{{ progression_theorique }}</td>
-                  <td>{{ total_realise }}</td>
-                  <td>{{ reste_a_faire }}</td>
-                  <td>{{ retard }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="part2">
+            <div class="part2-left">
+              <div id="hourlyChart"></div>
+            </div>
+            <div class="part2-right">
+              <div id="dailyChart"></div>
+            </div>
         </div>
-        <div class="partie3">
-          <div class="partie3-gauche">
-            <div id="hourlyChart"></div>
-          </div>
-          <div class="partie3-droite">
-            <div id="dailyChart"></div>
-          </div>
-        </div>
-      </div>
+    </div>
 
 
     <!-- script pour dessiner le graph des mouvements par heure -->
@@ -228,7 +246,7 @@
           const chart = new google.visualization.LineChart(document.getElementById('hourlyChart'));
           chart.draw(data, options);
       }
-  </script>
+    </script>
   
     
     <!-- script pour dessiner le graph des mouvements par jour -->
@@ -326,21 +344,7 @@
           const chartDaily = new google.visualization.LineChart(document.getElementById('dailyChart'));
           chartDaily.draw(dataDaily, optionsDaily);
       }
-  </script>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-    
-    
-    
-    
-    
+    </script>
 </body>
 </html>
 
