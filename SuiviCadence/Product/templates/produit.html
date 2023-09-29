@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Divisée Horizontalement et Verticalement</title>
+    <title>{{ produit.nom }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Inclure la bibliothèque Chart.js -->
@@ -26,6 +26,9 @@
       setInterval(autoRefreshPage, 300000);
     </script>
     <style>
+        a {
+            color: white;
+        }
         /* Style pour le conteneur principal */
         .container {
             width: 100%;
@@ -118,9 +121,9 @@
     <div class="container">
         <div class="part1">
             <div class="left">
-              <h2>Production RFM Semaine {{ numero_semaine }}</h2>
+              <h2>Production RFM S{{ numero_semaine }}</h2>
               {% if produit.photo %}
-              <img src="{% static 'images/'%}{{ produit.photo }}" alt="{{ produit.nom }}" height="200">
+              <img src="{% static 'images/'%}{{ produit.photo }}" alt="{{ produit.nom }}" height="250">
               {% else %}
               <p>Aucune image disponible pour ce produit.</p>
               {% endif %}
@@ -237,25 +240,61 @@
           const options = {
               hAxis: {
                   title: 'Heure',
+                  titleTextStyle: {
+                      fontSize: 18, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                      color:'white'
+                  },
                   format: 'HH:mm',
                   viewWindow: {
                       min: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 8, 0),
                       max: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 18, 0)
-                  }
+                  },
+                  textStyle: {
+                      fontSize: 18, // Définir la taille de police à 1.5 em
+                      bold: true, // Mettre en gras
+                      color:'white'
+                  },
+                  gridlines: {
+                      color: 'white', // Couleur de fond des lignes de la grille principale
+                  },
+                  minorGridlines: {
+                      color: 'transparent', // Couleur de fond des lignes de la grille mineure
+                  },
               },
               vAxis: {
                   title: 'Quantité',
-                  minValue: 0
+                  titleTextStyle: {
+                      fontSize: 18, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                      color:'white'
+                  },
+                  minValue: 0,
+                  textStyle: {
+                      fontSize: 18, // Définir la taille de police à 1.5 em
+                      bold: true, // Mettre en gras
+                      color:'white'
+                  },
+                  gridlines: {
+                      color: 'white', // Couleur de fond des lignes de la grille principale
+                  },
+                  minorGridlines: {
+                      color: 'transparent', // Couleur de fond des lignes de la grille mineure
+                  },
               },
               title: 'Mouvement Par Heure',
-              legend: { position: 'bottom' },
-              chartArea: { width: '80%', height: '50%' },
+              titleTextStyle: {
+                  fontSize: 20, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                  bold: true, // Mettre en gras
+                  color:'white'
+              },
+              legend: { position: 'bottom',textStyle: { fontSize: 18, bold:true, color:'white' } },
+              chartArea: { width: '80%', height: '60%' },
               tooltip: { isHtml: true },
-              pointSize: 5,
+              pointSize: 10,
+              backgroundColor:'#404040',
               series: {
-                  0: { type: 'bars', color: '#e61231', label: 'Courbe Rouge', pointShape: 'circle' }, // Utilisez type: 'bars' pour afficher cette série sous forme de barres
-                  1: { color: 'green', label: 'Courbe Bleue', pointShape: 'circle' },
-                  2: { color: 'blue', label: 'Objectif', pointShape: 'circle' }
+                  0: { type: 'bars', color: '#87CEEB', label: 'Courbe Rouge', pointShape: 'circle' }, // Utilisez type: 'bars' pour afficher cette série sous forme de barres
+                  1: { color: '#2ecc71', label: 'Courbe Bleue', pointShape: 'circle', lineWidth: 4 },
+                  2: { color: '#e61231', label: 'Objectif', pointShape: 'circle', lineWidth: 4 }
               }
           };
   
@@ -338,22 +377,59 @@
           const optionsDaily = {
               hAxis: {
                   title: 'Date',
+                  titleTextStyle: {
+                      fontSize: 18, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                      color:'white'
+                  },
                   format: 'yyyy-MM-dd', // Format des dates pour l'axe des x
-                  ticks: datesSemaineEnCours // Utilisez les dates de la semaine de travail comme étiquettes d'axe
+                  ticks: datesSemaineEnCours, // Utilisez les dates de la semaine de travail comme étiquettes d'axe
+                  textStyle: {
+                      fontSize: 18, // Définir la taille de police à 1.5 em
+                      bold: true, // Mettre en gras
+                      color:'white'
+                  },
+                  gridlines: {
+                      color: 'white', // Couleur de fond des lignes de la grille principale
+                  },
+                  minorGridlines: {
+                      color: 'transparent', // Couleur de fond des lignes de la grille mineure
+                  },
               },
               vAxis: {
                   title: 'Quantité',
-                  minValue: 0
+                  titleTextStyle: {
+                      fontSize: 18, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                      color:'white'
+                  },
+                  minValue: 0,
+                  textStyle: {
+                      fontSize: 18, // Définir la taille de police à 1.5 em
+                      bold: true, // Mettre en gras
+                      color:'white'
+                  },
+                  gridlines: {
+                      color: 'white', // Couleur de fond des lignes de la grille principale
+                  },
+                  minorGridlines: {
+                      color: 'transparent', // Couleur de fond des lignes de la grille mineure
+                  },
               },
               title:'Mouvement Par Jour',
-              legend: { position: 'bottom' },
-              chartArea: { width: '80%', height: '50%' },
+              titleTextStyle: {
+                  fontSize: 20, // Définir la taille de police du titre en pixels (par exemple, 24px)
+                  bold: true, // Mettre en gras
+                  color:'white'
+              },
+              legend: { position: 'bottom',textStyle: { fontSize: 18, bold:true, color:'white' } },
+              chartArea: { width: '80%', height: '60%' },
               tooltip: { isHtml: true },
-              pointSize: 5,
+              pointSize: 10,
+              backgroundColor: '#404040',
+              
               series: {
-                  0: { type: 'bars', color: '#e61231', label: 'Mouvements Quotidiens', pointShape: 'circle' },
-                  1: { color: 'green', label: 'Cumul des Mouvements', pointShape: 'circle' },
-                  2: { color: 'blue', label: 'Objectif', pointShape: 'circle' }
+                  0: { type: 'bars', color: '#87CEEB', label: 'Mouvements Quotidiens', pointShape: 'circle' },
+                  1: { color: '#2ecc71', label: 'Cumul des Mouvements', pointShape: 'circle', lineWidth: 4 },
+                  2: { color: '#e61231', label: 'Objectif', pointShape: 'circle', lineWidth: 4 }
               }
           };
   

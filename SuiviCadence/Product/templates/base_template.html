@@ -31,8 +31,16 @@
             text-align: center;
         }
 
-        button#bouton-plein-ecran{
-            color:black;
+
+        .logo-container {
+            text-align: center; /* Centre l'image horizontalement */
+            margin-top: 20px; /* Ajoute de l'espace en haut du logo (ajustez selon vos besoins) */
+        }
+        
+        .logo-container img {
+            max-width: 20%; /* Assure que l'image ne dépasse pas la largeur du conteneur */
+            height: auto; /* Ajuste la hauteur de l'image en conséquence */
+            padding: 10px; /* Ajoute de l'espace autour de l'image (modifiable selon vos besoins) */
         }
 
     </style>
@@ -45,7 +53,7 @@
             <img src="{% static 'images/produits/rfm.png' %}" alt="Logo Collins Aerospace" class="logo_img"
                 style="width: 50px; height: auto; margin: 15px;">
             <!--             <img src="../../static/images/produits/rfm.png" alt="Logo Collins Aerospace" class="logo_img" style="width: 50px; height: auto; margin: 15px;">
- --> <span class="logo_name">Collins Aerospace</span>
+ --> <span class="logo_name"> Collins Aerospace</span>
         </div>
         <ul class="nav-links">
             <li>
@@ -81,8 +89,10 @@
     <section class="home-section">
         <div class="home-content">
             <i class='bx bx-menu'></i>
-            <!-- Modifier le bouton pour inclure l'icône -->
-            <button id="bouton-plein-ecran"><i class="fas fa-expand"></i> Plein écran</button>
+            <div class="logo-container">
+                <img src="{% static 'images/produits/LogoW.png' %}"  alt="Collins Aerospace">
+            </div>
+            <button id="bouton-plein-ecran" style="width: 190px;"><i class="fas fa-expand"></i> Plein écran</button>
 
         </div>
 

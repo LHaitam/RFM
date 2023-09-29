@@ -1,7 +1,7 @@
 
 html
 {
-  background-color: whitesmoke;
+  background-color: #333333;
 }
 *
 {
@@ -19,7 +19,7 @@ html
   left: 0;
   height: 100%;
   width: 260px;
-  background: #3a3b45;
+  background: #1a1a1a;
   z-index: 100;
   transition: all 0.5s ease;
 }
@@ -89,7 +89,7 @@ html
 
 .sidebar .nav-links li:hover
 {
-  background: #4d4e57;
+  background: #272727;
 }
 
 .sidebar .nav-links li .iocn-link
@@ -152,7 +152,7 @@ html
 {
   padding: 6px 6px 14px 80px;
   margin-top: -10px;
-  background: #4d4e57;
+  background: #272727;
   display: none;
 }
 
@@ -294,7 +294,7 @@ html
 .home-section
 {
   position: relative;
-  background: whitesmoke;
+  background: #333333;
   height: 100vh;
   left: 260px;
   width: calc(100% - 260px);
@@ -318,7 +318,7 @@ html
 
     .home-section .home-content .bx-menu,
     .home-section .home-content .text {
-        color: #3a3b45;
+        color: white;
         font-size: 35px;
     }
 
@@ -397,16 +397,18 @@ html
 .content-table {
   border-collapse: collapse;
   margin: 25px 0;
-  font-size: 0.9em;
+  font-size: 1.2em;
   min-width: 100%;
   border-radius: 5px 5px 0 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+
 
 }
 
 .content-table thead tr {
-  background-color: #3a3b45;
+  background-color: #1a1a1a;
   color: #ffffff;
   text-align: left;
   font-weight: bold;
@@ -419,11 +421,11 @@ html
 }
 
 .content-table tbody tr {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #1a1a1a;
 }
 
 .content-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+  background-color: #404040;
 }
 
 .content-table tbody tr:last-of-type {
@@ -443,6 +445,8 @@ button {
   border-radius: 5px;
   cursor: pointer;
   margin-right: 5px;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 
@@ -470,6 +474,12 @@ a {
 }
 
 
+button#bouton-plein-ecran {
+  background-color: #404040;
+  color: white !important;
+  width: 190px !important;
+}
+
 
 /* title  */
 
@@ -477,13 +487,14 @@ a {
 .container {
   height: 100%;
   width: 100%;
-  background-color: whitesmoke;
+  background-color: #333333;
   padding: 25px 30px;
   margin-bottom: 0px;
+  color: white;
 }
 
 .container .title {
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 500;
   position: relative;
 }
