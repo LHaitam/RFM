@@ -46,6 +46,9 @@ def produit(request, produit_id):
                 quantite=0
             )
 
+       
+
+        
 
         # Calculer le takt théorique
         jours_travailles = 5  # Nombre de jours de travail par semaine
@@ -53,7 +56,7 @@ def produit(request, produit_id):
         if dernier_objectif_hebdo.quantite == 0 or dernier_objectif_hebdo.quantite is None:
             takt_theorique = 0
         else:
-            takt_theorique = math.floor(float(dernier_objectif_hebdo.quantite / (jours_travailles * heures_travailles)) * 10) / 10
+            takt_theorique = math.floor(float((jours_travailles * heures_travailles) / dernier_objectif_hebdo.quantite) * 10) / 10
 
         # Définition des jours de la semaine
         debut_semaine = date - timedelta(days=date.weekday())
@@ -94,12 +97,24 @@ def produit(request, produit_id):
         fin_semaine = debut_semaine + timedelta(days=4)
         mouvements_par_jour = MouvementTempsReel.objects.filter(produit=produit, date_heure__date__range=(debut_semaine, fin_semaine)).values('date_heure__date').annotate(total_ach=Sum('quantite'))
 
+        difference_jours = (date_actuelle - debut_semaine).days
+
+
+
+        # Calculer le nombre total d'heures de travail depuis le début de la semaine
+        heures_travaillees = max(0, difference_jours) * 8
+
+        # Ajouter les heures de travail d'aujourd'hui
+        if date_actuelle.hour >= 8:  # Assurez-vous de ne pas compter les heures avant le début de la journée de travail
+            heures_travaillees += min(date_actuelle.hour - 8, 8)
+
+
         # Calcul du takt réel
         total_realise = mouvements_par_jour.aggregate(Sum('total_ach'))['total_ach__sum']
         if total_realise is None or total_realise == 0:
             takt_reel = 0
         else:
-            takt_reel = math.floor(float(total_realise / (date.hour - 8)) * 10) / 10 if date.hour > 8 else 0
+            takt_reel = math.floor(float(heures_travaillees / total_realise) * 10) / 10 if date.hour > 8 else 0
 
         # Calcul de la progression théorique et du retard
         progression_theorique = math.floor(float(takt_theorique * (date.hour - 8)) * 10) / 10 if date.hour >= 8 else 0
